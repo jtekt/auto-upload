@@ -2,7 +2,6 @@
   <v-app>
     <v-main>
       <v-container>
-        
         <h1>Auto-upload</h1>
         <h2>Settings</h2>
 
@@ -27,14 +26,10 @@
           </v-col>
         </v-row>
 
-      <h2 class="mt-4">Uploads</h2>
-      <p>Last 10 uploads</p>
-      <p>
-        <div v-for="(upload, i) in uploads" :key="i">
-          {{ upload }}
-        </div>
-      </p>
-    </v-container>
+        <h2 class="mt-4">Uploads</h2>
+        <p>Last 10 uploads</p>
+        <v-data-table :headers="headers" :items="uploads"> </v-data-table>
+      </v-container>
     </v-main>
   </v-app>
 </template>
@@ -48,7 +43,14 @@ const config = ref({
   field: "test",
 })
 
-const uploads = ref([])
+const headers = ref([
+  { title: "Time", value: "time" },
+  { title: "Path", value: "path" },
+  { title: "URL", value: "url" },
+  { title: "Success", value: "success" },
+])
+
+const uploads = ref<any[]>([])
 
 onMounted(() => {
   window.electronAPI.getConfig()
@@ -56,7 +58,7 @@ onMounted(() => {
 
 window.electronAPI.onPost((value: any) => {
   uploads.value.push(value)
-  if(uploads.value.length > 10) uploads.value.shift()
+  if (uploads.value.length > 10) uploads.value.shift()
 })
 
 window.electronAPI.onConfig((value: any) => {
