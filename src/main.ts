@@ -28,7 +28,7 @@ const createWindow = () => {
   }
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 
   // CUSTOM STUFF FROM HERE
   ipcMain.on("set-config", (event, data) => {
