@@ -6,7 +6,7 @@ import FormData from "form-data"
 
 export const initWatcher = () => {
   const file = fs.readFileSync("./config/config.yml", "utf8")
-  const { path, url, field } = YAML.parse(file)
+  const { path, url, field = "file" } = YAML.parse(file)
 
   console.log(`[Chokidar] Wathing ${path}`)
   chokidar.watch(path).on("add", async (path) => {
