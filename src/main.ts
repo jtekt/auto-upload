@@ -1,6 +1,7 @@
-import { app, BrowserWindow } from "electron"
+import { app, BrowserWindow, ipcMain } from "electron"
 import path from "path"
 import { initWatcher } from "./fileWatcher"
+import { loadConfig, writeConfig } from "./configHandler"
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   app.quit()
@@ -28,8 +29,18 @@ const createWindow = () => {
   // Open the DevTools.
   mainWindow.webContents.openDevTools()
 
+  const config = loadConfig()
+
   // CUSTOM STUFF FROM HERE
-  initWatcher()
+  ipcMain.on("set-config", (event, data) => {
+    writeConfig(data)
+  })
+
+  ipcMain.on("get-config", (event, data) => {
+    mainWindow.webContents.send("config", config)
+  })
+
+  initWatcher(config, mainWindow)
 }
 
 // This method will be called when Electron has finished
