@@ -31,15 +31,20 @@
     "electron": "28.2.1",
     "eslint": "^8.0.1",
     "eslint-plugin-import": "^2.25.0",
+    "sass": "^1.70.0",
     "ts-node": "^10.0.0",
-    "typescript": "~4.5.4"
+    "typescript": "~4.7.0",
+    "vite-plugin-vuetify": "^2.0.1",
+    "vuetify": "^3.5.2"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "axios": "^1.6.7",
     "chokidar": "^3.5.3",
     "electron-squirrel-startup": "^1.0.0",
     "form-data": "^4.0.0",
     "vue": "^3.4.15",
+    "webfontloader": "^1.6.28",
     "yaml": "^2.3.4"
   }
 }

@@ -1,28 +1,42 @@
 <template>
-  <h1>Auto-upload</h1>
-  <h2>Settings</h2>
-  <p>
-    <label>Path</label>
-    <input type="text" v-model="config.path" />
-  </p>
-  <p>
-    <label>URL</label>
-    <input type="text" v-model="config.url" />
-  </p>
-  <p>
-    <label>Field</label>
-    <input type="text" v-model="config.field" />
-  </p>
-  <p>
-    <button @click="updateConfig()">Update</button>
-  </p>
-  <h2>Uploads</h2>
-  <p>Last 10 uploads</p>
-  <p>
-    <div v-for="(upload, i) in uploads" :key="i">
-      {{ upload }}
-    </div>
-  </p>
+  <v-app>
+    <v-main>
+      <v-container>
+        
+        <h1>Auto-upload</h1>
+        <h2>Settings</h2>
+
+        <v-row dense>
+          <v-col>
+            <v-text-field label="path" v-model="config.path" />
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <v-text-field label="URL" v-model="config.url" />
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <v-text-field label="Field" v-model="config.field" />
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
+            <v-btn @click="updateConfig()" text="Update" />
+          </v-col>
+        </v-row>
+
+      <h2 class="mt-4">Uploads</h2>
+      <p>Last 10 uploads</p>
+      <p>
+        <div v-for="(upload, i) in uploads" :key="i">
+          {{ upload }}
+        </div>
+      </p>
+    </v-container>
+    </v-main>
+  </v-app>
 </template>
 
 <script setup lang="ts">
