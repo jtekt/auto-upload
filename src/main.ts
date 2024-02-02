@@ -3,6 +3,7 @@ import path from "path"
 import { initWatcher } from "./fileWatcher"
 import { loadConfig, writeConfig } from "./configHandler"
 
+const { NODE_ENV } = process.env
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
   app.quit()
@@ -28,7 +29,7 @@ const createWindow = () => {
   }
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  if (NODE_ENV === "development") mainWindow.webContents.openDevTools()
 
   // CUSTOM STUFF FROM HERE
   ipcMain.on("set-config", (event, data) => {

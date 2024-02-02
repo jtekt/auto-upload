@@ -22,6 +22,11 @@
         </v-row>
         <v-row dense>
           <v-col>
+            <v-checkbox label="Move uploads" v-model="config.moveUploads" />
+          </v-col>
+        </v-row>
+        <v-row dense>
+          <v-col>
             <v-btn @click="updateConfig()" text="Update" />
           </v-col>
         </v-row>
@@ -41,6 +46,7 @@ const config = ref({
   path: "test",
   url: "test",
   field: "test",
+  moveUploads: false,
 })
 
 const headers = ref([
