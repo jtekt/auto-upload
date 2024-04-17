@@ -4,57 +4,69 @@
       <v-app-bar-title> Auto-upload </v-app-bar-title>
 
       <v-spacer></v-spacer>
-      <ThemeToggle />
+      <!-- <ThemeToggle /> -->
+      <v-tabs v-model="tab">
+        <v-tab value="settings">Settings</v-tab>
+        <v-tab value="history">History</v-tab>
+      </v-tabs>
     </v-app-bar>
     <v-main>
-      <v-container>
-        <h2>Settings</h2>
+      <v-window v-model="tab">
+        <v-window-item value="settings">
+          <v-container>
+            <h2 class="my-4">Settings</h2>
 
-        <v-row dense>
-          <v-col>
-            <v-text-field label="path" v-model="config.path" />
-          </v-col>
-        </v-row>
-        <v-row dense>
-          <v-col>
-            <v-text-field label="URL" v-model="config.url" />
-          </v-col>
-          <v-col>
-            <v-text-field label="Field" v-model="config.field" />
-          </v-col>
-        </v-row>
-        <v-row dense>
-          <v-col>
-            <v-checkbox label="Move uploads" v-model="config.moveUploads" />
-          </v-col>
-          <v-spacer></v-spacer>
-          <v-col cols="auto">
-            <v-btn
-              color="primary"
-              @click="updateConfig()"
-              prepend-icon="mdi-content-save"
-              text="Save"
-            />
-          </v-col>
-        </v-row>
+            <v-row dense>
+              <v-col>
+                <v-text-field label="path" v-model="config.path" />
+              </v-col>
+            </v-row>
+            <v-row dense>
+              <v-col>
+                <v-text-field label="URL" v-model="config.url" />
+              </v-col>
+              <v-col>
+                <v-text-field label="Field" v-model="config.field" />
+              </v-col>
+            </v-row>
+            <v-row dense>
+              <v-col>
+                <v-checkbox label="Move uploads" v-model="config.moveUploads" />
+              </v-col>
+              <v-spacer></v-spacer>
+              <v-col cols="auto">
+                <v-btn
+                  color="primary"
+                  @click="updateConfig()"
+                  prepend-icon="mdi-content-save"
+                  text="Save"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-window-item>
 
-        <h2 class="mt-4">Uploads</h2>
-        <p>Last 10 uploads</p>
-        <v-data-table :headers="headers" :items="uploads">
-          <template v-slot:item.success="{ item }">
-            <v-icon v-if="item.success" color="success">mdi-check</v-icon>
-            <v-icon v-else color="error">mdi-close</v-icon>
-          </template>
-        </v-data-table>
+        <v-window-item value="history">
+          <v-container>
+            <h2 class="mt-4">Uploads</h2>
+            <p>Last 10 uploads</p>
+            <v-data-table :headers="headers" :items="uploads">
+              <template v-slot:item.success="{ item }">
+                <v-icon v-if="item.success" color="success">mdi-check</v-icon>
+                <v-icon v-else color="error">mdi-close</v-icon>
+              </template>
+            </v-data-table>
+          </v-container>
+        </v-window-item>
+      </v-window>
 
-        <v-snackbar v-model="snackbar.show" :color="snackbar.color">
-          {{ snackbar.text }}
-          <v-spacer></v-spacer>
-          <template v-slot:actions>
-            <v-btn @click="snackbar.show = false" icon="mdi-close" />
-          </template>
-        </v-snackbar>
-      </v-container>
+      <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+        {{ snackbar.text }}
+        <v-spacer></v-spacer>
+        <template v-slot:actions>
+          <v-btn @click="snackbar.show = false" icon="mdi-close" />
+        </template>
+      </v-snackbar>
     </v-main>
   </v-app>
 </template>
@@ -65,6 +77,8 @@ import { useTheme } from "vuetify"
 import ThemeToggle from "./components/ThemeToggle.vue"
 
 const theme = useTheme()
+
+const tab = ref(null)
 
 const config = ref({
   path: "test",
