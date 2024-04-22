@@ -66,9 +66,9 @@ window.electronAPI.onConfig((value: any) => {
 
 function updateConfig() {
   // PROBLEM: Cannot pass config.value as is
-  const { url, path, field } = config.value
+  const { url, path, field, moveUploads } = config.value
   // Why not move uploads?
-  window.electronAPI.setConfig({ url, path, field })
+  window.electronAPI.setConfig({ url, path, field, moveUploads })
 
   snackbar.value.text = "Settings saved"
   snackbar.value.show = true

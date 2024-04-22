@@ -41,7 +41,11 @@ window.electronAPI.onPost((value: any) => {
   uploads.value.push(value)
   if (uploads.value.length > 10) uploads.value.shift()
 
-  if (!value.success) {
+  if (value.success) {
+    snackbar.value.text = "Upload successful"
+    snackbar.value.show = true
+    snackbar.value.color = "success"
+  } else {
     snackbar.value.text = "Upload failed"
     snackbar.value.show = true
     snackbar.value.color = "error"
