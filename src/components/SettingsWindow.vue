@@ -2,23 +2,50 @@
   <v-container>
     <h2 class="my-4">Settings</h2>
 
-    <v-row dense>
+    <v-row>
       <v-col>
         <v-text-field label="path" v-model="config.path" />
       </v-col>
+      <v-col cols="auto">
+        <v-checkbox
+          label="Move files after processing"
+          v-model="config.moveProcessed"
+        />
+      </v-col>
     </v-row>
-    <v-row dense>
+    <v-row v-if="VITE_ALLOW_PARSING">
+      <v-col cols="">
+        <v-select
+          label="Parser"
+          :items="parsers"
+          v-model="config.parser"
+          @update:model-value="
+            ($event) => {
+              if ($event === null) config.target = 'http'
+            }
+          "
+        />
+      </v-col>
+      <v-col cols="">
+        <v-select
+          :disabled="!config.parser"
+          label="Target"
+          :items="targets"
+          v-model="config.target"
+        />
+      </v-col>
+    </v-row>
+
+    <v-row>
       <v-col>
         <v-text-field label="URL" v-model="config.url" />
       </v-col>
-      <v-col>
+      <v-col v-if="!config.parser">
         <v-text-field label="Field" v-model="config.field" />
       </v-col>
     </v-row>
-    <v-row dense>
-      <v-col>
-        <v-checkbox label="Move uploads" v-model="config.moveUploads" />
-      </v-col>
+
+    <v-row>
       <v-spacer></v-spacer>
       <v-col cols="auto">
         <v-btn
@@ -42,13 +69,20 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
+import { defaultsettings } from "../config"
+const { VITE_ALLOW_PARSING } = import.meta.env
 
-const config = ref({
-  path: "test",
-  url: "test",
-  field: "test",
-  moveUploads: false,
-})
+const config = ref(defaultsettings)
+
+const parsers = ref([
+  { title: "None", value: null },
+  { title: "CSV", value: "csv" },
+])
+
+const targets = ref([
+  { title: "HTTP server", value: "http" },
+  { title: "PostgreSQL", value: "postgres" },
+])
 
 const snackbar = ref({
   show: false,
@@ -65,10 +99,8 @@ window.electronAPI.onConfig((value: any) => {
 })
 
 function updateConfig() {
-  // PROBLEM: Cannot pass config.value as is
-  const { url, path, field, moveUploads } = config.value
-  // Why not move uploads?
-  window.electronAPI.setConfig({ url, path, field, moveUploads })
+  const configObject = JSON.parse(JSON.stringify(config.value))
+  window.electronAPI.setConfig(configObject)
 
   snackbar.value.text = "Settings saved"
   snackbar.value.show = true

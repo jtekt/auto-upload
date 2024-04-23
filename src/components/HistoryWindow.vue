@@ -31,7 +31,7 @@ const snackbar = ref({
 const headers = ref([
   { title: "Time", value: "time" },
   { title: "Path", value: "path" },
-  { title: "URL", value: "url" },
+  // { title: "URL", value: "url" },
   { title: "Success", value: "success" },
 ])
 
