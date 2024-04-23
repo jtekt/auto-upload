@@ -1,24 +1,24 @@
-import chokidar from "chokidar"
 import fs from "fs"
+import path from "path"
+import chokidar from "chokidar"
 import axios from "axios"
 import FormData from "form-data"
 import { loadConfig } from "./configHandler"
-import path from "path"
 import { parse } from "csv-parse/sync"
-import { Client } from "pg"
-import format from "pg-format"
+import postgres from "postgres"
 
 export let watcher: chokidar.FSWatcher
 
 const processedDirName = `processed`
 
 const parseCsv = (path: string) => {
-  const fileText = fs.readFileSync(path).toString()
+  const fileText = fs.readFileSync(path, { encoding: "utf-8" }).toString()
   const options = {
     skip_empty_lines: true,
     trim: true,
     columns: true,
     cast: true,
+    bom: true,
   }
   return parse(fileText, options)
 }
@@ -45,15 +45,8 @@ const importToPostgres = async (
   table: string,
   records: any
 ) => {
-  const client = new Client({
-    connectionString,
-  })
-
-  const fields = Object.keys(records[0])
-
-  const values = records.map((r: any) => Object.values(r))
-
-  const sql = format("INSERT INTO %I (%s) VALUES %L", table, fields, values)
+  const sql = postgres(connectionString)
+  await sql`INSERT INTO ${sql(table)} ${sql(records)}`
 }
 
 export const initWatcher = (mainWindow: any) => {
@@ -71,6 +64,7 @@ export const initWatcher = (mainWindow: any) => {
     const {
       url,
       field = "file",
+      table,
       moveProcessed = false,
       parser = null,
       target = "http",
@@ -78,7 +72,6 @@ export const initWatcher = (mainWindow: any) => {
 
     const uiFeedbackPayload = {
       path,
-      field,
       time: new Date(),
       success: false,
     }
@@ -86,7 +79,8 @@ export const initWatcher = (mainWindow: any) => {
     try {
       if (parser) {
         const json = parseCsv(path)
-        if (target === "postgres") await importToPostgres(url, "items", json)
+        // TODO: table name from config
+        if (target === "postgres") await importToPostgres(url, table, json)
         if (target === "http") await postJson(url, json)
         // TODO: Postgres
       } else await postFile(path, url, field)

@@ -43,6 +43,9 @@
       <v-col v-if="!config.parser">
         <v-text-field label="Field" v-model="config.field" />
       </v-col>
+      <v-col v-if="config.target === 'postgres'">
+        <v-text-field label="Table" v-model="config.table" />
+      </v-col>
     </v-row>
 
     <v-row>

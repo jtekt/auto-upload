@@ -5,6 +5,7 @@ type Settings = {
   target: string
   url: string
   field: string
+  table: string
 }
 
 export const defaultsettings: Settings = {
@@ -14,4 +15,5 @@ export const defaultsettings: Settings = {
   target: "http",
   url: "http://localhost", // only if using HTTP POST
   field: "test", // only if posting as file
+  table: "items",
 }
