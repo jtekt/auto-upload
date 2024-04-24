@@ -6,6 +6,7 @@ import FormData from "form-data"
 import { loadConfig } from "./configHandler"
 import { parse } from "csv-parse/sync"
 import postgres from "postgres"
+import { HttpSettings, PostgresSettings } from "./config"
 
 export let watcher: chokidar.FSWatcher
 
@@ -22,13 +23,16 @@ const parseCsv = (path: string) => {
   }
   return parse(fileText, options)
 }
-const postFile = async (path: string, url: string, field: string) => {
+const postFile = async (path: string, config: HttpSettings) => {
+  const { url, field } = config
+
   const form = new FormData()
   form.append(field, fs.createReadStream(path))
   return axios.post(url, form)
 }
 
-const postJson = async (url: string, json: any) => {
+const postJson = async (json: any[], config: HttpSettings) => {
+  const { url } = config
   return axios.post(url, json)
 }
 
@@ -40,12 +44,16 @@ const moveFile = (originalFilePath: string) => {
   fs.renameSync(originalFilePath, newPath)
 }
 
-const importToPostgres = async (
-  connectionString: string,
-  table: string,
-  records: any
-) => {
-  const sql = postgres(connectionString)
+const importToPostgres = async (records: any[], config: PostgresSettings) => {
+  const { host, port, username, password, database, table, ssl } = config
+  const sql = postgres({
+    host,
+    port,
+    username,
+    password,
+    database,
+    ssl,
+  })
   await sql`INSERT INTO ${sql(table)} ${sql(records)}`
 }
 
@@ -61,6 +69,7 @@ export const initWatcher = (mainWindow: any) => {
   watcher = chokidar.watch(path, watcherOptions)
 
   watcher.on("add", async (path) => {
+    const config = loadConfig()
     const {
       url,
       field = "file",
@@ -68,7 +77,7 @@ export const initWatcher = (mainWindow: any) => {
       moveProcessed = false,
       parser = null,
       target = "http",
-    } = loadConfig()
+    } = config
 
     const uiFeedbackPayload = {
       path,
@@ -80,10 +89,10 @@ export const initWatcher = (mainWindow: any) => {
       if (parser) {
         const json = parseCsv(path)
         // TODO: table name from config
-        if (target === "postgres") await importToPostgres(url, table, json)
-        if (target === "http") await postJson(url, json)
+        if (target === "postgres") await importToPostgres(url, config.postgres)
+        if (target === "http") await postJson(url, config.http)
         // TODO: Postgres
-      } else await postFile(path, url, field)
+      } else await postFile(path, config.http)
 
       if (moveProcessed) moveFile(path)
 

@@ -36,20 +36,19 @@
       </v-col>
     </v-row>
 
-    <v-row>
-      <v-col>
-        <v-text-field label="URL" v-model="config.url" />
-      </v-col>
-      <v-col v-if="!config.parser">
-        <v-text-field label="Field" v-model="config.field" />
-      </v-col>
-      <v-col v-if="config.target === 'postgres'">
-        <v-text-field label="Table" v-model="config.table" />
-      </v-col>
-    </v-row>
+    <HttpSettings
+      v-if="config.target === 'http'"
+      v-model="config.http"
+      :field="!config.parser"
+    />
+
+    <PostgresSettings
+      v-if="config.target === 'postgres'"
+      v-model="config.postgres"
+    />
 
     <v-row>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-col cols="auto">
         <v-btn
           color="primary"
@@ -73,6 +72,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 import { defaultsettings } from "../config"
+import PostgresSettings from "./targets/PostgresSettings.vue"
+import HttpSettings from "./targets/HttpSettings.vue"
+
+// @ts-ignore
 const { VITE_ALLOW_PARSING } = import.meta.env
 
 const config = ref(defaultsettings)
@@ -94,15 +97,19 @@ const snackbar = ref({
 })
 
 onMounted(() => {
+  // @ts-ignore
   window.electronAPI.getConfig()
 })
 
+// @ts-ignore
 window.electronAPI.onConfig((value: any) => {
   config.value = value
 })
 
 function updateConfig() {
   const configObject = JSON.parse(JSON.stringify(config.value))
+
+  // @ts-ignore
   window.electronAPI.setConfig(configObject)
 
   snackbar.value.text = "Settings saved"
