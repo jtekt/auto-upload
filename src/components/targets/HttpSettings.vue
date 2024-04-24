@@ -3,9 +3,10 @@
     <v-col>
       <v-text-field v-model="settings.url" label="URL" />
     </v-col>
-    <v-col v-if="props.field">
+    <v-col v-if="!props.parser">
       <v-text-field v-model="settings.field" label="field" />
     </v-col>
+    <!-- TODO: fields and headers -->
   </v-row>
 </template>
 
@@ -15,7 +16,7 @@ import { type HttpSettings } from "../../config"
 
 const props = defineProps<{
   modelValue: HttpSettings
-  field: boolean
+  parser?: string
 }>()
 
 const emit = defineEmits(["update:modelValue"])

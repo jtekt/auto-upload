@@ -39,7 +39,7 @@
     <HttpSettings
       v-if="config.target === 'http'"
       v-model="config.http"
-      :field="!config.parser"
+      :parser="config.parser"
     />
 
     <PostgresSettings

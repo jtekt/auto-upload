@@ -12,7 +12,6 @@
       <v-text-field v-model="settings.username" label="Username" />
     </v-col>
     <v-col>
-      <!-- TODO: store encrypted -->
       <v-text-field
         type="password"
         v-model="settings.password"
