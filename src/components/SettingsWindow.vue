@@ -1,63 +1,66 @@
 <template>
   <v-container>
     <h2 class="my-4">Settings</h2>
+    <v-progress-linear :indeterminate="true" v-if="loading" />
+    <template v-else>
+      <v-row>
+        <v-col>
+          <v-text-field label="path" v-model="config.path" />
+        </v-col>
+        <v-col cols="auto">
+          <v-checkbox
+            label="Move files after processing"
+            v-model="config.moveProcessed"
+          />
+        </v-col>
+      </v-row>
 
-    <v-row>
-      <v-col>
-        <v-text-field label="path" v-model="config.path" />
-      </v-col>
-      <v-col cols="auto">
-        <v-checkbox
-          label="Move files after processing"
-          v-model="config.moveProcessed"
-        />
-      </v-col>
-    </v-row>
-    <v-row v-if="VITE_ALLOW_PARSING">
-      <v-col cols="">
-        <v-select
-          label="Parser"
-          :items="parsers"
-          v-model="config.parser"
-          @update:model-value="
-            ($event) => {
-              if ($event === null) config.target = 'http'
-            }
-          "
-        />
-      </v-col>
-      <v-col cols="">
-        <v-select
-          :disabled="!config.parser"
-          label="Target"
-          :items="targets"
-          v-model="config.target"
-        />
-      </v-col>
-    </v-row>
+      <v-row v-if="VITE_ALLOW_PARSING">
+        <v-col cols="">
+          <v-select
+            label="Action"
+            :items="parsers"
+            v-model="config.parser"
+            @update:model-value="
+              ($event) => {
+                if ($event === null) config.target = 'http'
+              }
+            "
+          />
+        </v-col>
+        <v-col cols="">
+          <v-select
+            :disabled="!config.parser"
+            label="Target"
+            :items="targets"
+            v-model="config.target"
+          />
+        </v-col>
+      </v-row>
 
-    <HttpSettings
-      v-if="config.target === 'http'"
-      v-model="config.http"
-      :parser="config.parser"
-    />
+      <HttpSettings
+        v-if="config.target === 'http'"
+        v-model="config.http"
+        :parser="config.parser"
+      />
 
-    <PostgresSettings
-      v-if="config.target === 'postgres'"
-      v-model="config.postgres"
-    />
+      <PostgresSettings
+        v-if="config.target === 'postgres'"
+        v-model="config.postgres"
+      />
 
-    <v-row>
-      <v-spacer />
-      <v-col cols="auto">
-        <v-btn
-          color="primary"
-          @click="updateConfig()"
-          prepend-icon="mdi-content-save"
-          text="Save"
-        />
-      </v-col>
-    </v-row>
+      <v-row>
+        <v-spacer />
+        <v-col cols="auto">
+          <v-btn
+            color="primary"
+            @click="updateConfig()"
+            prepend-icon="mdi-content-save"
+            text="Save"
+          />
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 
   <v-snackbar v-model="snackbar.show" :color="snackbar.color">
@@ -81,8 +84,8 @@ const { VITE_ALLOW_PARSING } = import.meta.env
 const config = ref(defaultsettings)
 
 const parsers = ref([
-  { title: "None", value: null },
-  { title: "CSV", value: "csv" },
+  { title: "Send as file", value: null },
+  { title: "Convert CSV to JSON", value: "csv" },
 ])
 
 const targets = ref([
@@ -96,6 +99,8 @@ const snackbar = ref({
   color: "success",
 })
 
+const loading = ref(true)
+
 onMounted(() => {
   // @ts-ignore
   window.electronAPI.getConfig()
@@ -104,6 +109,7 @@ onMounted(() => {
 // @ts-ignore
 window.electronAPI.onConfig((value: any) => {
   config.value = value
+  loading.value = false
 })
 
 function updateConfig() {

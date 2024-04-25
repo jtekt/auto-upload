@@ -16,7 +16,8 @@ export type Field = {
 export type HttpSettings = {
   url: string
   field: string
-  fields: []
+  fields: Field[]
+  headers: Field[]
 }
 
 export type Settings = {
@@ -47,6 +48,7 @@ export const defaultsettings: Settings = {
     url: "http://localhost",
     field: "csv",
     fields: [],
+    headers: [],
   },
 
   postgres: {

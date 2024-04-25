@@ -11,7 +11,6 @@ export const loadConfig = () => {
   try {
     // const file = fs.readFileSync(configPath, "utf8")
     // const config = YAML.parse(file)
-    // const fileString = file.toString()
     const file = fs.readFileSync(configPath)
     const decryptedConfigString = safeStorage.decryptString(file)
     const config = JSON.parse(decryptedConfigString)
@@ -24,7 +23,6 @@ export const loadConfig = () => {
 export const writeConfig = async (config: Settings) => {
   const { path: oldPath } = loadConfig()
   watcher.unwatch(oldPath)
-  // TODO: consider storing as encrypted
   // const yml = YAML.stringify(config)
   // fs.writeFileSync(configPath, yml)
   const configString = JSON.stringify(config)
