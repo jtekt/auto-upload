@@ -37,6 +37,7 @@ const headers = ref([
 
 const uploads = ref<any[]>([])
 
+// @ts-ignore
 window.electronAPI.onPost((value: any) => {
   uploads.value.push(value)
   if (uploads.value.length > 10) uploads.value.shift()

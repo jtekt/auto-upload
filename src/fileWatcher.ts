@@ -70,14 +70,7 @@ export const initWatcher = (mainWindow: any) => {
 
   watcher.on("add", async (path) => {
     const config = loadConfig()
-    const {
-      url,
-      field = "file",
-      table,
-      moveProcessed = false,
-      parser = null,
-      target = "http",
-    } = config
+    const { moveProcessed = false, parser = null, target = "http" } = config
 
     const uiFeedbackPayload = {
       path,
@@ -89,8 +82,8 @@ export const initWatcher = (mainWindow: any) => {
       if (parser) {
         const json = parseCsv(path)
         // TODO: table name from config
-        if (target === "postgres") await importToPostgres(url, config.postgres)
-        if (target === "http") await postJson(url, config.http)
+        if (target === "postgres") await importToPostgres(json, config.postgres)
+        if (target === "http") await postJson(json, config.http)
         // TODO: Postgres
       } else await postFile(path, config.http)
 
