@@ -13,8 +13,7 @@
   },
   "keywords": [],
   "author": {
-    "name": "Maxime Moreillon",
-    "email": "m.moreillon@gmail.com"
+    "name": "Maxime Moreillon"
   },
   "license": "MIT",
   "devDependencies": {
