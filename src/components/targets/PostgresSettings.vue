@@ -1,37 +1,46 @@
 <template>
-  <v-row>
-    <v-col>
-      <v-text-field v-model="settings.host" label="Host" />
-    </v-col>
-    <v-col>
-      <v-text-field type="number" v-model.number="settings.port" label="Port" />
-    </v-col>
-  </v-row>
-  <v-row>
-    <v-col>
-      <v-text-field v-model="settings.username" label="Username" />
-    </v-col>
-    <v-col>
-      <v-text-field
-        type="password"
-        v-model="settings.password"
-        label="Password"
-      />
-    </v-col>
-  </v-row>
-  <v-row>
-    <v-col>
-      <v-text-field v-model="settings.database" label="Database" />
-    </v-col>
-    <v-col>
-      <v-text-field v-model="settings.table" label="Table" />
-    </v-col>
-  </v-row>
-  <v-row>
-    <v-col>
-      <v-checkbox label="SSL" v-model="settings.ssl" />
-    </v-col>
-  </v-row>
+  <v-card variant="outlined">
+    <v-card-title> PostgreSQL settings </v-card-title>
+    <v-card-text>
+      <v-row>
+        <v-col>
+          <v-text-field v-model="settings.host" label="Host" />
+        </v-col>
+        <v-col>
+          <v-text-field
+            type="number"
+            v-model.number="settings.port"
+            label="Port"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field v-model="settings.username" label="Username" />
+        </v-col>
+        <v-col>
+          <v-text-field
+            type="password"
+            v-model="settings.password"
+            label="Password"
+          />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <v-text-field v-model="settings.database" label="Database" />
+        </v-col>
+        <v-col>
+          <v-text-field v-model="settings.table" label="Table" />
+        </v-col>
+      </v-row>
+      <v-row dense>
+        <v-col>
+          <v-checkbox label="SSL" v-model="settings.ssl" />
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts" setup>

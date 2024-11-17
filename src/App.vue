@@ -1,14 +1,16 @@
 <template>
   <v-app>
-    <v-app-bar>
+    <v-app-bar extended>
       <v-app-bar-title> Auto-upload </v-app-bar-title>
 
-      <v-spacer></v-spacer>
-      <v-tabs v-model="tab">
-        <v-tab value="settings">Settings</v-tab>
-        <v-tab value="history">History</v-tab>
-      </v-tabs>
+      <v-spacer />
       <ThemeToggle />
+      <template v-slot:extension>
+        <v-tabs v-model="tab">
+          <v-tab value="settings">Settings</v-tab>
+          <v-tab value="history">History</v-tab>
+        </v-tabs>
+      </template>
     </v-app-bar>
     <v-main>
       <v-window v-model="tab">

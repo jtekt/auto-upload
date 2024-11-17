@@ -1,36 +1,40 @@
 <template>
-  <v-row>
-    <v-col>
-      <v-text-field v-model="settings.url" label="URL" />
-    </v-col>
-    <v-col v-if="!props.parser">
-      <v-text-field v-model="settings.field" label="field" />
-    </v-col>
-  </v-row>
-  <!-- TODO: headers -->
+  <v-card variant="outlined">
+    <v-card-title> HTTP settings </v-card-title>
+    <v-card-text>
+      <v-row>
+        <v-col>
+          <v-text-field v-model="settings.url" label="URL" />
+        </v-col>
+        <v-col v-if="!props.parser">
+          <v-text-field v-model="settings.field" label="field" />
+        </v-col>
+      </v-row>
+      <!-- TODO: headers -->
+      <v-row align="center">
+        <v-col cols="auto">
+          <h3>Fields</h3>
+        </v-col>
 
-  <v-row>
-    <v-col>
-      <h3>Fields</h3>
-    </v-col>
-  </v-row>
+        <v-spacer></v-spacer>
+        <v-col cols="auto">
+          <v-btn @click="addField" text="Add field" prepend-icon="mdi-plus" />
+        </v-col>
+      </v-row>
 
-  <v-row v-for="(field, index) in settings.fields" :key="index">
-    <v-col>
-      <v-text-field v-model="field.key" label="Key" />
-    </v-col>
-    <v-col>
-      <v-text-field v-model="field.value" label="Value" />
-    </v-col>
-    <v-col cols="auto">
-      <v-btn @click="removeField(index)" icon="mdi-close" variant="flat" />
-    </v-col>
-  </v-row>
-  <v-row>
-    <v-col cols="auto">
-      <v-btn @click="addField" text="Add field" prepend-icon="mdi-plus" />
-    </v-col>
-  </v-row>
+      <v-row v-for="(field, index) in settings.fields" :key="index">
+        <v-col>
+          <v-text-field v-model="field.key" label="Key" />
+        </v-col>
+        <v-col>
+          <v-text-field v-model="field.value" label="Value" />
+        </v-col>
+        <v-col cols="auto">
+          <v-btn @click="removeField(index)" icon="mdi-close" variant="flat" />
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts" setup>

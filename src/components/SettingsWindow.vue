@@ -49,7 +49,7 @@
         v-model="config.postgres"
       />
 
-      <v-row>
+      <v-row class="mt-2">
         <v-spacer />
         <v-col cols="auto">
           <v-btn
