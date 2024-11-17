@@ -1,34 +1,66 @@
 <template>
   <v-container>
     <h2 class="my-4">Settings</h2>
+    <v-progress-linear :indeterminate="true" v-if="loading" />
+    <template v-else>
+      <v-row>
+        <v-col>
+          <v-text-field label="path" v-model="config.path" />
+        </v-col>
+        <v-col cols="auto">
+          <v-checkbox
+            label="Move files after processing"
+            v-model="config.moveProcessed"
+          />
+        </v-col>
+      </v-row>
 
-    <v-row dense>
-      <v-col>
-        <v-text-field label="path" v-model="config.path" />
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col>
-        <v-text-field label="URL" v-model="config.url" />
-      </v-col>
-      <v-col>
-        <v-text-field label="Field" v-model="config.field" />
-      </v-col>
-    </v-row>
-    <v-row dense>
-      <v-col>
-        <v-checkbox label="Move uploads" v-model="config.moveUploads" />
-      </v-col>
-      <v-spacer></v-spacer>
-      <v-col cols="auto">
-        <v-btn
-          color="primary"
-          @click="updateConfig()"
-          prepend-icon="mdi-content-save"
-          text="Save"
-        />
-      </v-col>
-    </v-row>
+      <v-row v-if="VITE_ALLOW_PARSING">
+        <v-col cols="">
+          <v-select
+            label="Action"
+            :items="parsers"
+            v-model="config.parser"
+            @update:model-value="
+              ($event) => {
+                if ($event === null) config.target = 'http'
+              }
+            "
+          />
+        </v-col>
+        <v-col cols="">
+          <v-select
+            :disabled="!config.parser"
+            label="Target"
+            :items="targets"
+            v-model="config.target"
+          />
+        </v-col>
+      </v-row>
+
+      <HttpSettings
+        v-if="config.target === 'http'"
+        v-model="config.http"
+        :parser="config.parser"
+      />
+
+      <PostgresSettings
+        v-if="config.target === 'postgres'"
+        v-model="config.postgres"
+      />
+
+      <v-row>
+        <v-spacer />
+        <v-col cols="auto">
+          <v-btn
+            color="primary"
+            @click="updateConfig()"
+            prepend-icon="mdi-content-save"
+            text="Save settings"
+          />
+        </v-col>
+      </v-row>
+    </template>
   </v-container>
 
   <v-snackbar v-model="snackbar.show" :color="snackbar.color">
@@ -42,13 +74,24 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
+import { defaultsettings } from "../config"
+import PostgresSettings from "./targets/PostgresSettings.vue"
+import HttpSettings from "./targets/HttpSettings.vue"
 
-const config = ref({
-  path: "test",
-  url: "test",
-  field: "test",
-  moveUploads: false,
-})
+// @ts-ignore
+const { VITE_ALLOW_PARSING } = import.meta.env
+
+const config = ref(defaultsettings)
+
+const parsers = ref([
+  { title: "Send as file", value: null },
+  { title: "Convert CSV to JSON", value: "csv" },
+])
+
+const targets = ref([
+  { title: "HTTP server", value: "http" },
+  { title: "PostgreSQL", value: "postgres" },
+])
 
 const snackbar = ref({
   show: false,
@@ -56,19 +99,24 @@ const snackbar = ref({
   color: "success",
 })
 
+const loading = ref(true)
+
 onMounted(() => {
+  // @ts-ignore
   window.electronAPI.getConfig()
 })
 
+// @ts-ignore
 window.electronAPI.onConfig((value: any) => {
   config.value = value
+  loading.value = false
 })
 
 function updateConfig() {
-  // PROBLEM: Cannot pass config.value as is
-  const { url, path, field, moveUploads } = config.value
-  // Why not move uploads?
-  window.electronAPI.setConfig({ url, path, field, moveUploads })
+  const configObject = JSON.parse(JSON.stringify(config.value))
+
+  // @ts-ignore
+  window.electronAPI.setConfig(configObject)
 
   snackbar.value.text = "Settings saved"
   snackbar.value.show = true

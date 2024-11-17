@@ -4,11 +4,11 @@
       <v-app-bar-title> Auto-upload </v-app-bar-title>
 
       <v-spacer></v-spacer>
-      <!-- <ThemeToggle /> -->
       <v-tabs v-model="tab">
         <v-tab value="settings">Settings</v-tab>
         <v-tab value="history">History</v-tab>
       </v-tabs>
+      <ThemeToggle />
     </v-app-bar>
     <v-main>
       <v-window v-model="tab">

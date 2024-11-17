@@ -32,6 +32,7 @@ const createWindow = () => {
   if (NODE_ENV === "development") mainWindow.webContents.openDevTools()
 
   // CUSTOM STUFF FROM HERE
+  // NOTE: those are defined in preload.ts
   ipcMain.on("set-config", (event, data) => {
     writeConfig(data)
   })
