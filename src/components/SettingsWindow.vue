@@ -56,7 +56,7 @@
             color="primary"
             @click="updateConfig()"
             prepend-icon="mdi-content-save"
-            text="Save"
+            text="Save settings"
           />
         </v-col>
       </v-row>

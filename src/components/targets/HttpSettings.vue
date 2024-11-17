@@ -9,7 +9,11 @@
   </v-row>
   <!-- TODO: headers -->
 
-  <h3>Fields</h3>
+  <v-row>
+    <v-col>
+      <h3>Fields</h3>
+    </v-col>
+  </v-row>
 
   <v-row v-for="(field, index) in settings.fields" :key="index">
     <v-col>
@@ -39,8 +43,6 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits(["update:modelValue"])
-
-console.log(JSON.parse(JSON.stringify(props.modelValue)))
 
 const settings = ref(JSON.parse(JSON.stringify(props.modelValue)))
 
