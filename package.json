@@ -2,7 +2,7 @@
   "name": "auto-upload",
   "productName": "auto-upload",
   "version": "1.0.1",
-  "description": "My Electron application description",
+  "description": "Auto-upload is an Electron application that watches a user-specified folder for new files and uploads them to a given URL via a HTTP POST requests",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -14,8 +14,7 @@
   },
   "keywords": [],
   "author": {
-    "name": "Maxime Moreillon",
-    "email": "m.moreillon@gmail.com"
+    "name": "Maxime Moreillon"
   },
   "license": "MIT",
   "devDependencies": {
