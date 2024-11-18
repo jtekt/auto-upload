@@ -6,7 +6,8 @@ import FormData from "form-data"
 import { loadConfig } from "./configHandler"
 import { parse } from "csv-parse/sync"
 import postgres from "postgres"
-import { HttpSettings, PostgresSettings } from "./config"
+import { HttpSettings, PostgresSettings, S3Settings } from "./config"
+import { Client } from "minio"
 
 export let watcher: chokidar.FSWatcher
 
@@ -29,6 +30,21 @@ const postFile = async (path: string, config: HttpSettings) => {
   const form = new FormData()
   form.append(field, fs.createReadStream(path))
   return axios.post(url, form)
+}
+
+const s3Upload = async (originalFilePath: string, config: S3Settings) => {
+  const { endPoint, port, useSSL, bucket, secretKey, accessKey } = config
+  const minioClient = new Client({
+    endPoint,
+    accessKey,
+    secretKey,
+    port,
+    useSSL,
+  })
+
+  const { base } = path.parse(originalFilePath)
+
+  return minioClient.fPutObject(bucket, base, originalFilePath)
 }
 
 const postJson = async (json: any[], config: HttpSettings) => {
@@ -85,7 +101,10 @@ export const initWatcher = (mainWindow: any) => {
         if (target === "postgres") await importToPostgres(json, config.postgres)
         if (target === "http") await postJson(json, config.http)
         // TODO: Postgres
-      } else await postFile(path, config.http)
+      } else {
+        if (target === "s3") await s3Upload(path, config.s3)
+        else await postFile(path, config.http)
+      }
 
       if (moveProcessed) moveFile(path)
 

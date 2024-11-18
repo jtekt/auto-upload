@@ -29,12 +29,7 @@
           />
         </v-col>
         <v-col cols="">
-          <v-select
-            :disabled="!config.parser"
-            label="Target"
-            :items="targets"
-            v-model="config.target"
-          />
+          <v-select label="Target" :items="targets" v-model="config.target" />
         </v-col>
       </v-row>
 
@@ -48,6 +43,8 @@
         v-if="config.target === 'postgres'"
         v-model="config.postgres"
       />
+
+      <S3Settings v-if="config.target === 's3'" v-model="config.s3" />
 
       <v-row class="mt-2">
         <v-spacer />
@@ -73,10 +70,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, onMounted, computed } from "vue"
 import { defaultsettings } from "../config"
 import PostgresSettings from "./targets/PostgresSettings.vue"
 import HttpSettings from "./targets/HttpSettings.vue"
+import S3Settings from "./targets/S3Settings.vue"
 
 // @ts-ignore
 const { VITE_ALLOW_PARSING } = import.meta.env
@@ -88,10 +86,18 @@ const parsers = ref([
   { title: "Convert CSV to JSON", value: "csv" },
 ])
 
-const targets = ref([
-  { title: "HTTP server", value: "http" },
-  { title: "PostgreSQL", value: "postgres" },
-])
+const targets = computed(() => {
+  if (config.value.parser === "csv")
+    return [
+      { title: "HTTP server", value: "http" },
+      { title: "PostgreSQL", value: "postgres" },
+    ]
+  else
+    return [
+      { title: "HTTP server", value: "http" },
+      { title: "S3", value: "s3" },
+    ]
+})
 
 const snackbar = ref({
   show: false,
