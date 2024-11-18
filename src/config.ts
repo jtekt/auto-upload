@@ -1,3 +1,12 @@
+export type S3Settings = {
+  endPoint: string
+  port: number
+  useSSL: boolean
+  accessKey: string
+  secretKey: string
+  bucket: string
+}
+
 export type PostgresSettings = {
   host: string
   port: number
@@ -31,6 +40,7 @@ export type Settings = {
 
   http: HttpSettings
   postgres: PostgresSettings
+  s3: S3Settings
 }
 
 export const defaultsettings: Settings = {
@@ -59,5 +69,14 @@ export const defaultsettings: Settings = {
     database: "myDb",
     table: "myTable",
     ssl: false,
+  },
+
+  s3: {
+    endPoint: "localhost",
+    port: 9000,
+    useSSL: true,
+    accessKey: "",
+    secretKey: "",
+    bucket: "my-bucket",
   },
 }

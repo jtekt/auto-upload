@@ -5,7 +5,7 @@ import path from "path"
 import { watcher } from "./fileWatcher"
 import { defaultsettings, Settings } from "./config"
 
-const configPath = path.join(app.getPath("userData"), "config.yml")
+const configPath = path.join(app.getPath("userData"), "config")
 
 export const loadConfig = () => {
   try {
@@ -21,6 +21,7 @@ export const loadConfig = () => {
 }
 
 export const writeConfig = async (config: Settings) => {
+  // TODO: fix path update
   const { path: oldPath } = loadConfig()
   watcher.unwatch(oldPath)
   // const yml = YAML.stringify(config)
@@ -29,6 +30,5 @@ export const writeConfig = async (config: Settings) => {
   const encryptedConfigString = safeStorage.encryptString(configString)
 
   fs.writeFileSync(configPath, encryptedConfigString)
-  const { path: newPath } = loadConfig()
-  watcher.add(newPath)
+  const newConfig = loadConfig()
 }
