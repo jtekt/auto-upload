@@ -22,7 +22,7 @@
             :items="parsers"
             v-model="config.parser"
             @update:model-value="
-              ($event) => {
+              ($event: HTMLElementEventMap) => {
                 if ($event === null) config.target = 'http'
               }
             "

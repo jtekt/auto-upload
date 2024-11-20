@@ -1,4 +1,4 @@
-import fs from "fs"
+import fs from "node:fs"
 import { app, safeStorage } from "electron"
 import path from "path"
 import { watcher } from "./fileWatcher"
@@ -23,7 +23,9 @@ export const writeConfig = async (config: Settings) => {
   const configString = JSON.stringify(config)
   const encryptedConfigString = safeStorage.encryptString(configString)
 
+  // @ts-ignore
   fs.writeFileSync(configPath, encryptedConfigString)
+
   const { path: newPath } = loadConfig()
   watcher.add(newPath)
 }
