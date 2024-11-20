@@ -19,7 +19,7 @@
         </v-window-item>
 
         <v-window-item value="history" eager>
-          <HistoryWIndow />
+          <HistoryWindow />
         </v-window-item>
       </v-window>
     </v-main>
@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import ThemeToggle from "./components/ThemeToggle.vue"
 import SettingsWindow from "./components/SettingsWindow.vue"
-import HistoryWIndow from "./components/HistoryWIndow.vue"
+import HistoryWindow from "./components/HistoryWindow.vue"
 import { ref } from "vue"
 
 const tab = ref(null)

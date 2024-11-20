@@ -1,7 +1,7 @@
 import fs from "fs"
 import path from "path"
 import chokidar from "chokidar"
-import axios from "axios"
+import axios, { AxiosHeaders } from "axios"
 import FormData from "form-data"
 import { loadConfig } from "./configHandler"
 import { parse } from "csv-parse/sync"
@@ -25,11 +25,19 @@ const parseCsv = (path: string) => {
   return parse(fileText, options)
 }
 const postFile = async (path: string, config: HttpSettings) => {
-  const { url, field } = config
+  const { url, field, fields, headers } = config
 
+  // TODO: typing
+  const options: any = {
+    headers: {},
+  }
   const form = new FormData()
   form.append(field, fs.createReadStream(path))
-  return axios.post(url, form)
+
+  for (const { key, value } of fields) form.append(key, value)
+  for (const { key, value } of headers) options.headers[key] = value
+
+  return axios.post(url, form, options)
 }
 
 const s3Upload = async (originalFilePath: string, config: S3Settings) => {
