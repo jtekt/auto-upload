@@ -1,15 +1,16 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
-const { contextBridge, ipcRenderer } = require("electron")
+import { contextBridge, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("electronAPI", {
   // Main to renderer
-  onPost: (callback: Function) =>
-    ipcRenderer.on("post", (event, value) => callback(value)),
-  onConfig: (callback: Function) =>
-    ipcRenderer.on("config", (event, value) => callback(value)),
+  // I.e. Allowing the Vue.js front-end to subscribe / react to those events
+  // TODO: how are those sent from the electron backend?
+  onConfig: (cb: Function) => ipcRenderer.on("config", (_, value) => cb(value)),
+  onPost: (cb: Function) => ipcRenderer.on("post", (_, value) => cb(value)),
 
   // Renderer to main
+  // I.e. Allowing the Vue.js front-end to use those functions to run these functions
   setConfig: (config: any) => ipcRenderer.send("set-config", config),
   getConfig: (config: any) => ipcRenderer.send("get-config", config),
-})
+});

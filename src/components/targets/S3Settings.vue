@@ -45,22 +45,22 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue"
-import { S3Settings } from "../../config"
+import { ref, watch } from "vue";
+import { S3Settings } from "../../settings";
 
 const props = defineProps<{
-  modelValue: S3Settings
-}>()
+  modelValue: S3Settings;
+}>();
 
-const emit = defineEmits(["update:modelValue"])
+const emit = defineEmits(["update:modelValue"]);
 
-const settings = ref(JSON.parse(JSON.stringify(props.modelValue)))
+const settings = ref(JSON.parse(JSON.stringify(props.modelValue)));
 
 watch(
   settings,
   () => {
-    emit("update:modelValue", settings.value)
+    emit("update:modelValue", settings.value);
   },
   { deep: true }
-)
+);
 </script>
