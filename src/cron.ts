@@ -3,12 +3,31 @@ import cron from "node-cron";
 import { handleFile } from "./utils";
 import fs from "fs";
 import { join as pathJoin } from "path";
+import path from "path";
+import { processedDirName } from "./constants";
+
 async function stopAllJobs() {
   const tasks = cron.getTasks();
   for (const taskId of tasks.keys()) {
     const task = tasks.get(taskId);
     await task?.destroy();
   }
+}
+
+function getAllFiles(dirPath: string, arrayOfFiles: string[]) {
+  arrayOfFiles = arrayOfFiles || [];
+
+  const files = fs.readdirSync(dirPath).filter((f) => f !== processedDirName);
+
+  files.forEach(function (file) {
+    if (fs.statSync(dirPath + "/" + file).isDirectory()) {
+      arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
+    } else {
+      arrayOfFiles.push(path.join(dirPath, "/", file));
+    }
+  });
+
+  return arrayOfFiles;
 }
 
 export async function initCron() {
@@ -19,10 +38,7 @@ export async function initCron() {
   if (mode !== "cron") return;
 
   const handler = async () => {
-    const dirEnts = fs.readdirSync(dirPath, { withFileTypes: true });
-    const filePaths = dirEnts
-      .filter((e) => e.isFile())
-      .map((e) => pathJoin(e.parentPath, e.name));
+    const filePaths = getAllFiles(dirPath, []);
     for (const file of filePaths) {
       await handleFile(file);
     }

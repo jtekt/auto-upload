@@ -8,8 +8,7 @@ import { Client } from "minio";
 import { HttpSettings, PostgresSettings, S3Settings } from "./settings";
 import { loadConfig } from "./configHandler";
 import { mainWindow } from "./main";
-
-const processedDirName = `processed`;
+import { processedDirName } from "./constants";
 
 export const parseCsv = (path: string) => {
   const fileText = fs.readFileSync(path, { encoding: "utf-8" }).toString();
@@ -51,9 +50,13 @@ export const s3Upload = async (
     useSSL,
   });
 
-  const { base } = path.parse(originalFilePath);
+  const { path: watchedDirPath } = loadConfig();
 
-  return minioClient.fPutObject(bucket, base, originalFilePath);
+  const key = path
+    .relative(watchedDirPath, originalFilePath)
+    .replace(/\\/g, "/");
+
+  return minioClient.fPutObject(bucket, key, originalFilePath);
 };
 
 export const postJson = async (json: any[], config: HttpSettings) => {
@@ -62,11 +65,21 @@ export const postJson = async (json: any[], config: HttpSettings) => {
 };
 
 export const moveFile = (originalFilePath: string) => {
-  const { base, dir } = path.parse(originalFilePath);
-  const newDir = path.join(dir, processedDirName);
-  if (!fs.existsSync(newDir)) fs.mkdirSync(newDir);
-  const newPath = path.join(newDir, base);
-  fs.renameSync(originalFilePath, newPath);
+  const { path: watchedDirPath } = loadConfig();
+  const originalRelativePath = path.relative(watchedDirPath, originalFilePath);
+
+  const newFilePath = path.join(
+    watchedDirPath,
+    processedDirName,
+    originalRelativePath
+  );
+
+  const { dir } = path.parse(newFilePath);
+
+  const destDirPath = path.resolve(dir);
+  if (!fs.existsSync(destDirPath))
+    fs.mkdirSync(destDirPath, { recursive: true });
+  fs.renameSync(originalFilePath, newFilePath);
 };
 
 export const importToPostgres = async (
@@ -111,6 +124,7 @@ export const handleFile = async (filePath: string) => {
       else await postFile(filePath, http);
     }
 
+    // TODO: deal with deep paths
     if (moveProcessed) moveFile(filePath);
 
     uiFeedbackPayload.success = true;

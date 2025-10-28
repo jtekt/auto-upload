@@ -44,7 +44,7 @@ export type Settings = {
   s3: S3Settings;
 
   // unused for the time being
-  mode?: string;
+  mode: "off" | "watch" | "cron";
   cron?: string;
 };
 

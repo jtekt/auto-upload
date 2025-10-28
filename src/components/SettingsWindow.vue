@@ -18,7 +18,7 @@
       <v-row>
         <v-col cols="auto">
           <v-select
-            :items="['watch', 'cron']"
+            :items="['off', 'watch', 'cron']"
             v-model="config.mode"
             label="Mode"
           ></v-select>
