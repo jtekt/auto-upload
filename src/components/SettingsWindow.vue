@@ -92,6 +92,7 @@ import { defaultsettings } from "../settings";
 import PostgresSettings from "./targets/PostgresSettings.vue";
 import HttpSettings from "./targets/HttpSettings.vue";
 import S3Settings from "./targets/S3Settings.vue";
+import { CronExpressionParser } from 'cron-parser';
 
 // @ts-ignore
 const { VITE_ALLOW_PARSING } = import.meta.env;
@@ -136,6 +137,18 @@ window.electronAPI.onConfig((value: any) => {
 });
 
 function updateConfig() {
+
+  if(config.value.cron) {
+    try {
+      CronExpressionParser.parse(config.value.cron);
+    } catch (error) {
+      snackbar.value.text = "Invalid cron";
+      snackbar.value.show = true;
+      snackbar.value.color = "error";
+      return
+    }
+  }
+  
   const configObject = JSON.parse(JSON.stringify(config.value));
 
   // @ts-ignore
