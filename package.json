@@ -2,7 +2,7 @@
   "name": "auto-upload",
   "productName": "auto-upload",
   "version": "1.0.1",
-  "description": "Auto-upload is an Electron application that watches a user-specified folder for new files and uploads them to a given URL via a HTTP POST requests",
+  "description": "Auto-upload is an Electron application automatically uploads the content of a folder to a given target",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",

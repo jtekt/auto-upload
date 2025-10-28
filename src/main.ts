@@ -3,12 +3,14 @@ import path from "path";
 import { initWatcher } from "./fileWatcher";
 import { loadConfig, writeConfig } from "./configHandler";
 import { initCron } from "./cron";
+import started from "electron-squirrel-startup";
 
-const { NODE_ENV } = process.env;
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require("electron-squirrel-startup")) {
+if (started) {
   app.quit();
 }
+
+const { NODE_ENV } = process.env;
 
 export let mainWindow: BrowserWindow;
 
