@@ -15,6 +15,23 @@
         </v-col>
       </v-row>
 
+      <v-row>
+        <v-col cols="auto">
+          <v-select
+            :items="['watch', 'cron']"
+            v-model="config.mode"
+            label="Mode"
+          ></v-select>
+        </v-col>
+        <v-col>
+          <v-text-field
+            label="Cron"
+            v-model="config.cron"
+            :disabled="config.mode !== 'cron'"
+          />
+        </v-col>
+      </v-row>
+
       <v-row v-if="VITE_ALLOW_PARSING">
         <v-col cols="">
           <v-select
@@ -22,8 +39,8 @@
             :items="parsers"
             v-model="config.parser"
             @update:model-value="
-              ($event: HTMLElementEventMap) => {
-                if ($event === null) config.target = 'http'
+              ($event: string) => {
+                if ($event === null) config.target = 'http';
               }
             "
           />
@@ -70,62 +87,63 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue"
-import { defaultsettings } from "../config"
-import PostgresSettings from "./targets/PostgresSettings.vue"
-import HttpSettings from "./targets/HttpSettings.vue"
-import S3Settings from "./targets/S3Settings.vue"
+import { ref, onMounted, computed } from "vue";
+import { defaultsettings } from "../settings";
+import PostgresSettings from "./targets/PostgresSettings.vue";
+import HttpSettings from "./targets/HttpSettings.vue";
+import S3Settings from "./targets/S3Settings.vue";
 
 // @ts-ignore
-const { VITE_ALLOW_PARSING } = import.meta.env
+const { VITE_ALLOW_PARSING } = import.meta.env;
 
-const config = ref(defaultsettings)
+const config = ref(defaultsettings);
 
 const parsers = ref([
   { title: "Send as file", value: null },
   { title: "Convert CSV to JSON", value: "csv" },
-])
+]);
 
 const targets = computed(() => {
   if (config.value.parser === "csv")
     return [
       { title: "HTTP server", value: "http" },
       { title: "PostgreSQL", value: "postgres" },
-    ]
+    ];
   else
     return [
       { title: "HTTP server", value: "http" },
       { title: "S3", value: "s3" },
-    ]
-})
+    ];
+});
 
 const snackbar = ref({
   show: false,
   text: "",
   color: "success",
-})
+});
 
-const loading = ref(true)
+const loading = ref(true);
 
 onMounted(() => {
   // @ts-ignore
-  window.electronAPI.getConfig()
-})
+  window.electronAPI.getConfig();
+});
 
 // @ts-ignore
 window.electronAPI.onConfig((value: any) => {
-  config.value = value
-  loading.value = false
-})
+  config.value = value;
+  loading.value = false;
+});
 
 function updateConfig() {
-  const configObject = JSON.parse(JSON.stringify(config.value))
+  const configObject = JSON.parse(JSON.stringify(config.value));
 
   // @ts-ignore
-  window.electronAPI.setConfig(configObject)
+  window.electronAPI.setConfig(configObject);
 
-  snackbar.value.text = "Settings saved"
-  snackbar.value.show = true
-  snackbar.value.color = "success"
+  // TODO: error handling
+  snackbar.value.text = "Settings saved";
+  snackbar.value.show = true;
+  snackbar.value.color = "success";
 }
 </script>

@@ -1,47 +1,52 @@
 export type S3Settings = {
-  endPoint: string
-  port: number
-  useSSL: boolean
-  accessKey: string
-  secretKey: string
-  bucket: string
-}
+  endPoint: string;
+  port: number;
+  useSSL: boolean;
+  accessKey: string;
+  secretKey: string;
+  bucket: string;
+};
 
 export type PostgresSettings = {
-  host: string
-  port: number
-  username: string
-  password: string
-  database: string
-  table: string
-  ssl: boolean | "require" | "allow" | "prefer" | "verify-full"
-}
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  database: string;
+  table: string;
+  ssl: boolean | "require" | "allow" | "prefer" | "verify-full";
+};
 
-export type Field = {
-  key: string
-  value: string
-}
+type Field = {
+  key: string;
+  value: string;
+};
 
 export type HttpSettings = {
-  url: string
-  field: string
-  fields: Field[]
-  headers: Field[]
-}
+  url: string;
+  field: string;
+  fields: Field[];
+  headers: Field[];
+};
 
 export type Settings = {
-  path: string
-  moveProcessed: boolean
-  parser?: string
-  target: string
-  url: string
-  field: string
-  table: string
+  path: string;
 
-  http: HttpSettings
-  postgres: PostgresSettings
-  s3: S3Settings
-}
+  moveProcessed: boolean;
+  parser?: string;
+  target: string;
+  url: string;
+  field: string;
+  table: string;
+
+  http: HttpSettings;
+  postgres: PostgresSettings;
+  s3: S3Settings;
+
+  // unused for the time being
+  mode?: string;
+  cron?: string;
+};
 
 export const defaultsettings: Settings = {
   path: "test",
@@ -79,4 +84,8 @@ export const defaultsettings: Settings = {
     secretKey: "",
     bucket: "my-bucket",
   },
-}
+
+  // Experimental
+  mode: "watch",
+  cron: "5 * * * *",
+};

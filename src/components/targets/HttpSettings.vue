@@ -98,41 +98,41 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue"
-import { type HttpSettings } from "../../config"
+import { ref, watch } from "vue";
+import { type HttpSettings } from "../../settings";
 
 const props = defineProps<{
-  modelValue: HttpSettings
-  parser?: string
-}>()
+  modelValue: HttpSettings;
+  parser?: string;
+}>();
 
-const emit = defineEmits(["update:modelValue"])
+const emit = defineEmits(["update:modelValue"]);
 
-const settings = ref(JSON.parse(JSON.stringify(props.modelValue)))
+const settings = ref(JSON.parse(JSON.stringify(props.modelValue)));
 
-const tab = ref(null)
+const tab = ref(null);
 
 watch(
   settings,
   () => {
-    emit("update:modelValue", settings.value)
+    emit("update:modelValue", settings.value);
   },
   { deep: true }
-)
+);
 
 function addField() {
-  settings.value.fields.push({ key: "", value: "" })
+  settings.value.fields.push({ key: "", value: "" });
 }
 
 function removeField(index: number) {
-  settings.value.fields.splice(index, 1)
+  settings.value.fields.splice(index, 1);
 }
 
 function addHeader() {
-  settings.value.headers.push({ key: "", value: "" })
+  settings.value.headers.push({ key: "", value: "" });
 }
 
 function removeHeader(index: number) {
-  settings.value.headers.splice(index, 1)
+  settings.value.headers.splice(index, 1);
 }
 </script>
