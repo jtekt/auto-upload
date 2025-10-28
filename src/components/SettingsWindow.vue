@@ -138,7 +138,7 @@ window.electronAPI.onConfig((value: any) => {
 
 function updateConfig() {
 
-  if(config.value.cron) {
+  if(config.value.mode === 'cron') {
     try {
       CronExpressionParser.parse(config.value.cron);
     } catch (error) {
