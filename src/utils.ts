@@ -124,7 +124,6 @@ export const handleFile = async (filePath: string) => {
       else await postFile(filePath, http);
     }
 
-    // TODO: deal with deep paths
     if (moveProcessed) moveFile(filePath);
 
     uiFeedbackPayload.success = true;
@@ -132,7 +131,6 @@ export const handleFile = async (filePath: string) => {
     console.error(error);
     uiFeedbackPayload.success = false;
   } finally {
-    // PROBLEM: how to talk to the mainWindow here?
     mainWindow.webContents.send("post", uiFeedbackPayload);
   }
 };

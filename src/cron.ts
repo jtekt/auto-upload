@@ -2,7 +2,6 @@ import { loadConfig } from "./configHandler";
 import cron from "node-cron";
 import { handleFile } from "./utils";
 import fs from "fs";
-import { join as pathJoin } from "path";
 import path from "path";
 import { processedDirName } from "./constants";
 

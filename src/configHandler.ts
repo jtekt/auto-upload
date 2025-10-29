@@ -19,20 +19,10 @@ export const loadConfig = () => {
 };
 
 export const writeConfig = async (config: Settings) => {
-  // TODO: consider simply recreating the watcher
-  // PROBLEM: do not have access to mainWindow
-
-  // const { path: oldPath } = loadConfig();
-  // watcher.unwatch(oldPath);
-
   const configString = JSON.stringify(config);
   const encryptedConfigString = safeStorage.encryptString(configString);
   fs.writeFileSync(configPath, encryptedConfigString);
 
-  // const { path: newPath } = loadConfig();
-
-  // // TODO: deal with timers
-  // watcher.add(newPath);
   initWatcher();
   initCron();
 };

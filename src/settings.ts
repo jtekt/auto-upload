@@ -43,7 +43,6 @@ export type Settings = {
   postgres: PostgresSettings;
   s3: S3Settings;
 
-  // unused for the time being
   mode: "off" | "watch" | "cron";
   cron?: string;
 };
@@ -52,12 +51,7 @@ export const defaultsettings: Settings = {
   path: "test",
   moveProcessed: false,
   parser: null,
-  target: "http",
-
-  // Legacy
-  url: "http://localhost", // only if using HTTP POST
-  field: "test", // only if posting as file
-  table: "items",
+  target: "s3",
 
   http: {
     url: "http://localhost",
@@ -85,7 +79,11 @@ export const defaultsettings: Settings = {
     bucket: "my-bucket",
   },
 
-  // Experimental
-  mode: "watch",
-  cron: "5 * * * *",
+  mode: "off",
+  cron: "0 0 * * *",
+
+  // Legacy
+  url: "http://localhost", // only if using HTTP POST
+  field: "test", // only if posting as file
+  table: "items",
 };

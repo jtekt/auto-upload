@@ -5,7 +5,6 @@ import { contextBridge, ipcRenderer } from "electron";
 contextBridge.exposeInMainWorld("electronAPI", {
   // Main to renderer
   // I.e. Allowing the Vue.js front-end to subscribe / react to those events
-  // TODO: how are those sent from the electron backend?
   onConfig: (cb: Function) => ipcRenderer.on("config", (_, value) => cb(value)),
   onPost: (cb: Function) => ipcRenderer.on("post", (_, value) => cb(value)),
 
